@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Productos Exclusivos</title>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Estilos -->
+    <link rel="stylesheet" href="css/style.css?v=11">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Catálogo de Productos</h1>
+            <p>Descubre las mejores ofertas y productos seleccionados.</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Barra de filtros y búsqueda -->
+        <div class="filters-bar">
+            <input type="text" id="search-input" class="search-input" placeholder="Buscar productos...">
+            <select id="sort-select" class="sort-select">
+                <option value="default">Recomendados</option>
+                <option value="price-asc">Precio: Menor a Mayor</option>
+                <option value="price-desc">Precio: Mayor a Menor</option>
+                <option value="name-asc">Nombre: A-Z</option>
+                <option value="name-desc">Nombre: Z-A</option>
+            </select>
+        </div>
+
+        <!-- El contenedor principal donde se inyectarán los productos -->
+        <div id="products-grid" class="products-grid">
+            <!-- Los productos se cargarán aquí dinámicamente -->
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Catálogo de Productos. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Modal de Producto -->
+    <dialog id="product-modal" class="modal">
+        <div class="modal-content">
+            <button id="close-modal" class="close-btn" aria-label="Cerrar modal">&times;</button>
+            <div class="modal-body">
+                <div class="modal-gallery-container">
+                    <button class="carousel-btn prev" id="modal-prev" aria-label="Imagen anterior">&#10094;</button>
+                    <div id="modal-gallery" class="modal-gallery">
+                        <!-- Imágenes cargadas dinámicamente -->
+                    </div>
+                    <button class="carousel-btn next" id="modal-next" aria-label="Siguiente imagen">&#10095;</button>
+                    <div class="carousel-indicators" id="modal-indicators"></div>
+                </div>
+                <div class="modal-info">
+                    <h2 id="modal-title" class="modal-title"></h2>
+                    <p id="modal-desc" class="modal-desc"></p>
+                    <a id="modal-link" href="#" target="_blank" rel="noopener noreferrer" class="product-link">Ver en Amazon</a>
+                </div>
+            </div>
+        </div>
+    </dialog>
+
+    <!-- Script principal -->
+    <script src="js/app.js?v=11"></script>
+</body>
+</html>

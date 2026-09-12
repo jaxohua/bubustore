@@ -1,0 +1,161 @@
+document.addEventListener('DOMContentLoaded', () => {
+    const tableBody = document.getElementById('admin-table-body');
+    const adminStatusFilter = document.getElementById('admin-status-filter');
+    const adminSearchInput = document.getElementById('admin-search-input');
+    
+    let productsList = [];
+    let stateData = {};
+
+    if (adminStatusFilter) adminStatusFilter.addEventListener('change', () => renderAdminTable());
+    if (adminSearchInput) adminSearchInput.addEventListener('input', () => renderAdminTable());
+
+    const loadData = async () => {
+        try {
+            // Load base products
+            const prodRes = await fetch('data/productos.json');
+            const data = await prodRes.json();
+            
+            if (Array.isArray(data)) {
+                productsList = data;
+            } else if (data.productos && Array.isArray(data.productos)) {
+                productsList = data.productos;
+            } else {
+                for (const key in data) {
+                    if (Array.isArray(data[key])) {
+                        productsList = data[key];
+                        break;
+                    }
+                }
+            }
+
+            // Load states and prices
+            try {
+                const stateRes = await fetch('data/estado_productos.json');
+                if(stateRes.ok) {
+                    stateData = await stateRes.json();
+                }
+            } catch(e) {
+                console.log("No se pudo cargar estado_productos.json (puede que esté vacío o no exista aún).");
+            }
+
+            renderAdminTable();
+
+        } catch (error) {
+            console.error('Error:', error);
+            tableBody.innerHTML = `<tr><td colspan="5" style="color:red">Error al cargar los datos</td></tr>`;
+        }
+    };
+
+    const renderAdminTable = () => {
+        tableBody.innerHTML = '';
+        
+        let filteredList = productsList;
+        
+        // Filter by text
+        const query = adminSearchInput ? adminSearchInput.value.toLowerCase().trim() : '';
+        if (query) {
+            filteredList = filteredList.filter(p => 
+                p.titulo.toLowerCase().includes(query) || 
+                p.id.toLowerCase().includes(query)
+            );
+        }
+
+        // Filter by status
+        const statusVal = adminStatusFilter ? adminStatusFilter.value : 'all';
+        if (statusVal !== 'all') {
+            filteredList = filteredList.filter(p => {
+                const state = stateData[p.id] || {};
+                const isSold = state.vendido === true;
+                const hasPrice = state.precio !== undefined && state.precio !== null && String(state.precio).trim() !== '';
+
+                if (statusVal === 'available') return !isSold;
+                if (statusVal === 'sold') return isSold;
+                if (statusVal === 'no-price') return !isSold && !hasPrice;
+                return true;
+            });
+        }
+
+        if (filteredList.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="6" style="text-align: center;">No se encontraron productos.</td></tr>`;
+            return;
+        }
+        
+        filteredList.forEach(product => {
+            const { id, titulo } = product;
+            const imageUrl = `images/${id}_01.jpg`;
+            
+            const state = stateData[id] || { precio: '', vendido: false, amazon_precio: '' };
+            const isSold = state.vendido;
+            const amazonPrice = state.amazon_precio || '---';
+            
+            const tr = document.createElement('tr');
+            
+            tr.innerHTML = `
+                <td><img src="${imageUrl}" alt="img" class="admin-thumbnail" onerror="this.src='https://via.placeholder.com/60'"></td>
+                <td style="max-width:300px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${titulo}">
+                    <strong>${id}</strong><br>
+                    <small>${titulo}</small>
+                </td>
+                <td>
+                    <span class="status-badge ${isSold ? 'status-sold' : 'status-available'}" id="badge-${id}">
+                        ${isSold ? 'VENDIDO' : 'DISPONIBLE'}
+                    </span>
+                </td>
+                <td style="font-weight: 600; color: #64748b;">
+                    ${amazonPrice}
+                </td>
+                <td>
+                    <input type="number" class="price-input" id="price-${id}" value="${state.precio || ''}" placeholder="0.00">
+                    <button class="action-btn save-btn" onclick="savePrice('${id}')">Guardar Precio</button>
+                </td>
+                <td>
+                    <button class="action-btn toggle-btn ${isSold ? '' : 'is-sold'}" id="toggle-${id}" onclick="toggleSold('${id}')">
+                        ${isSold ? 'Marcar Disponible' : 'Marcar Vendido'}
+                    </button>
+                </td>
+            `;
+            
+            tableBody.appendChild(tr);
+        });
+    };
+
+    window.savePrice = async (id) => {
+        const priceInput = document.getElementById(`price-${id}`);
+        const newPrice = priceInput.value;
+        
+        await updateAPI(id, { precio: newPrice });
+        alert('Precio guardado correctamente');
+    };
+
+    window.toggleSold = async (id) => {
+        if(!stateData[id]) stateData[id] = { vendido: false };
+        const newState = !stateData[id].vendido;
+        stateData[id].vendido = newState;
+        
+        await updateAPI(id, { vendido: newState });
+        renderAdminTable(); // re-render to update UI
+    };
+
+    const updateAPI = async (id, dataObj) => {
+        dataObj.id = id;
+        try {
+            const response = await fetch('/api/update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dataObj)
+            });
+            if(!response.ok) throw new Error("Error en servidor");
+            
+            // update local state cache
+            if(!stateData[id]) stateData[id] = {};
+            if('precio' in dataObj) stateData[id].precio = dataObj.precio;
+            if('vendido' in dataObj) stateData[id].vendido = dataObj.vendido;
+            
+        } catch(e) {
+            console.error(e);
+            alert("Hubo un error guardando los datos. Asegúrate de que el servidor python (server.py) esté corriendo.");
+        }
+    };
+
+    loadData();
+});
