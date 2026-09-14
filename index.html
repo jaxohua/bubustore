@@ -12,13 +12,34 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Estilos -->
-    <link rel="stylesheet" href="css/style.css?v=11">
+    <link rel="stylesheet" href="css/style.css?v=17">
 </head>
 <body>
     <header>
-        <div class="container">
-            <h1>Catálogo de Productos</h1>
-            <p>Descubre las mejores ofertas y productos seleccionados.</p>
+        <div class="container header-flex">
+            <div>
+                <h1>Catálogo de Productos</h1>
+                <p>Descubre las mejores ofertas y productos seleccionados.</p>
+            </div>
+            
+            <div class="header-actions">
+                <div class="payment-methods">
+                    <div class="payment-text">Pagos: Efectivo, Débito y Crédito <br><small style="color: #FFD814;">(Meses sin intereses según tu banco)</small></div>
+                    <div class="payment-icons">
+                        <span style="font-size: 1.5rem; line-height: 1;">💵</span>
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/visa.svg" alt="Visa" class="payment-icon" height="24">
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/mastercard.svg" alt="Mastercard" class="payment-icon" height="24">
+                    </div>
+                </div>
+
+                <div class="telegram-container">
+                    <div class="telegram-text">Únete al Grupo de Telegram para coordinar tu Compra</div>
+                    <a href="https://t.me/+FsYQ0AKAyPFmZDIx" target="_blank" rel="noopener noreferrer" class="telegram-link">
+                        <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="telegram-icon"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                        Únete al grupo
+                    </a>
+                </div>
+            </div>
         </div>
     </header>
 

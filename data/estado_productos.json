@@ -221,7 +221,8 @@
   },
   "B0H2DFNLCQ": {
     "amazon_precio": "$389.99",
-    "precio": 272.99
+    "precio": 272.99,
+    "vendido": true
   },
   "B0GXK3985G": {
     "amazon_precio": "$499.00",
@@ -233,7 +234,8 @@
   },
   "B0GWFFYDYX": {
     "amazon_precio": "$224.00",
-    "precio": 156.8
+    "precio": 156.8,
+    "vendido": true
   },
   "B0GCM35GPV": {
     "amazon_precio": "$299.99",
@@ -621,7 +623,7 @@
     "vendido": true
   },
   "B0H24BWVTW": {
-    "vendido": false,
+    "vendido": true,
     "precio": "250"
   },
   "B0H1WN5Q9D": {
@@ -1354,7 +1356,8 @@
     "precio": "300"
   },
   "B0HB9QRRYS": {
-    "precio": "280"
+    "precio": "280",
+    "vendido": true
   },
   "B0H978WQPN": {
     "precio": "250"
