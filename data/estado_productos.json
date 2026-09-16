@@ -41,11 +41,13 @@
   },
   "B0FBQK55F9": {
     "amazon_precio": "$1,099.00",
-    "precio": 769.3
+    "precio": "769.3",
+    "folio": "1"
   },
   "B0H1L6ZJSR": {
     "amazon_precio": "$598.00",
-    "precio": 418.6
+    "precio": "418.6",
+    "folio": "20"
   },
   "B0G3VP4LY6": {
     "amazon_precio": "$375.20",

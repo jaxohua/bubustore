@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (filteredList.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="6" style="text-align: center;">No se encontraron productos.</td></tr>`;
+            tableBody.innerHTML = `<tr><td colspan="7" style="text-align: center;">No se encontraron productos.</td></tr>`;
             return;
         }
         
@@ -105,8 +105,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     ${amazonPrice}
                 </td>
                 <td>
+                    <input type="text" class="price-input" id="folio-${id}" value="${state.folio || ''}" placeholder="#Lote" style="width: 80px;">
+                </td>
+                <td>
                     <input type="number" class="price-input" id="price-${id}" value="${state.precio || ''}" placeholder="0.00">
-                    <button class="action-btn save-btn" onclick="savePrice('${id}')">Guardar Precio</button>
+                    <button class="action-btn save-btn" onclick="saveData('${id}')">Guardar</button>
                 </td>
                 <td>
                     <button class="action-btn toggle-btn ${isSold ? '' : 'is-sold'}" id="toggle-${id}" onclick="toggleSold('${id}')">
@@ -119,12 +122,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    window.savePrice = async (id) => {
+    window.saveData = async (id) => {
         const priceInput = document.getElementById(`price-${id}`);
+        const folioInput = document.getElementById(`folio-${id}`);
         const newPrice = priceInput.value;
+        const newFolio = folioInput.value;
         
-        await updateAPI(id, { precio: newPrice });
-        alert('Precio guardado correctamente');
+        await updateAPI(id, { precio: newPrice, folio: newFolio });
+        alert('Datos guardados correctamente');
     };
 
     window.toggleSold = async (id) => {
@@ -150,6 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if(!stateData[id]) stateData[id] = {};
             if('precio' in dataObj) stateData[id].precio = dataObj.precio;
             if('vendido' in dataObj) stateData[id].vendido = dataObj.vendido;
+            if('folio' in dataObj) stateData[id].folio = dataObj.folio;
             
         } catch(e) {
             console.error(e);

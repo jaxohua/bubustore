@@ -120,6 +120,15 @@ main.container { padding-top: 1.5rem; padding-bottom: 4rem; flex: 1; }
     border-radius: 4px; z-index: 10;
 }
 
+.product-folio-badge {
+    position: absolute; top: 12px; right: 12px;
+    background: rgba(19, 25, 33, 0.85); color: #FFD814;
+    padding: 4px 10px; border-radius: 4px;
+    font-weight: 700; font-size: 0.85rem; z-index: 10;
+    backdrop-filter: blur(4px); border: 1px solid rgba(255, 216, 20, 0.3);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
 /* Gallery */
 .image-gallery {
     display: flex; overflow-x: auto; scroll-snap-type: x mandatory;

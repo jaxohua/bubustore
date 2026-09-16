@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const gridContainer = document.getElementById('products-grid');
     const searchInput = document.getElementById('search-input');
+    const folioRangeInput = document.getElementById('folio-range-input');
     const sortSelect = document.getElementById('sort-select');
     
     let stateData = {};
@@ -16,6 +17,35 @@ document.addEventListener('DOMContentLoaded', () => {
                 p.titulo.toLowerCase().includes(query) || 
                 p.descripcion.toLowerCase().includes(query)
             );
+        }
+        
+        // Rango de folios
+        const folioQuery = folioRangeInput ? folioRangeInput.value.trim() : '';
+        if (folioQuery) {
+            let minFolio = -Infinity;
+            let maxFolio = Infinity;
+            
+            if (folioQuery.includes('-')) {
+                const parts = folioQuery.split('-');
+                if (parts[0].trim() !== '') minFolio = parseInt(parts[0].replace(/\D/g, ''), 10);
+                if (parts[1].trim() !== '') maxFolio = parseInt(parts[1].replace(/\D/g, ''), 10);
+            } else {
+                const singleNum = parseInt(folioQuery.replace(/\D/g, ''), 10);
+                if (!isNaN(singleNum)) {
+                    minFolio = singleNum;
+                    maxFolio = singleNum;
+                }
+            }
+            
+            filtered = filtered.filter(p => {
+                const productFolioStr = stateData[p.id] ? stateData[p.id].folio : '';
+                if (!productFolioStr) return false;
+                
+                const productFolioNum = parseInt(String(productFolioStr).replace(/\D/g, ''), 10);
+                if (isNaN(productFolioNum)) return false;
+                
+                return productFolioNum >= minFolio && productFolioNum <= maxFolio;
+            });
         }
         
         // Ordenamiento
@@ -35,6 +65,30 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (priceB === Infinity) return -1;
                     return priceB - priceA;
                 }
+                
+                let folioA = Infinity;
+                if (stateData[a.id] && stateData[a.id].folio) {
+                    const parsed = parseInt(String(stateData[a.id].folio).replace(/\D/g, ''), 10);
+                    if (!isNaN(parsed)) folioA = parsed;
+                }
+                
+                let folioB = Infinity;
+                if (stateData[b.id] && stateData[b.id].folio) {
+                    const parsed = parseInt(String(stateData[b.id].folio).replace(/\D/g, ''), 10);
+                    if (!isNaN(parsed)) folioB = parsed;
+                }
+                
+                if (sortVal === 'folio-asc') {
+                    if (folioA === Infinity && folioB === Infinity) return 0;
+                    return folioA - folioB;
+                }
+                if (sortVal === 'folio-desc') {
+                    if (folioA === Infinity && folioB === Infinity) return 0;
+                    if (folioA === Infinity) return 1;
+                    if (folioB === Infinity) return -1;
+                    return folioB - folioA;
+                }
+                
                 return 0;
             });
         }
@@ -43,6 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     if (searchInput) searchInput.addEventListener('input', applyFiltersAndSort);
+    if (folioRangeInput) folioRangeInput.addEventListener('input', applyFiltersAndSort);
     if (sortSelect) sortSelect.addEventListener('change', applyFiltersAndSort);
 
     // Función para renderizar los productos
@@ -83,11 +138,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 priceHtml = `<div class="product-price-container"><span class="product-price-symbol">$</span><span class="product-price">${roundedPrice.toLocaleString('en-US')}</span></div>`;
             }
 
+            let folioHtml = '';
+            if (stateData[id] && stateData[id].folio) {
+                folioHtml = `<div class="product-folio-badge">${stateData[id].folio}</div>`;
+            }
+
             const card = document.createElement('article');
             card.className = 'product-card';
 
             card.innerHTML = `
                 <div class="card-gallery-wrapper">
+                    ${folioHtml}
                     ${galleryHtml}
                 </div>
                 <div class="product-content">

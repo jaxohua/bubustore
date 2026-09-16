@@ -49,6 +49,8 @@ class CustomHandler(http.server.SimpleHTTPRequestHandler):
                     state[product_id]['precio'] = data['precio']
                 if 'vendido' in data:
                     state[product_id]['vendido'] = data['vendido']
+                if 'folio' in data:
+                    state[product_id]['folio'] = data['folio']
                     
                 # Save state
                 with open(DATA_FILE, 'w', encoding='utf-8') as f:
