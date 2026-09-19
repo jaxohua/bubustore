@@ -286,6 +286,21 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             
             applyFiltersAndSort();
+
+            // Auto-open modal if ?id= is present in URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const productIdToOpen = urlParams.get('id');
+            if (productIdToOpen) {
+                const productToOpen = allAvailableProducts.find(p => p.id === productIdToOpen);
+                if (productToOpen) {
+                    let price = '';
+                    if (stateData[productToOpen.id] && stateData[productToOpen.id].precio) {
+                        price = `$${Math.round(Number(stateData[productToOpen.id].precio)).toLocaleString('en-US')}`;
+                    }
+                    openModal(productToOpen, price);
+                }
+            }
+            
         } catch (error) {
             console.error('Error al cargar los productos:', error);
             gridContainer.innerHTML = `<p style="color: #ef4444;">Error al cargar los productos.</p>`;
