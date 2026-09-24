@@ -1,0 +1,3 @@
+([('GeneradorPostsBubuStore',
+   '/Users/4x/Documents/Programacion/amazon-resell/dist/GeneradorPostsBubuStore',
+   'EXECUTABLE')],)
